@@ -18,55 +18,46 @@ body {
 .nav {
   display:flex;
   justify-content:space-between;
-  align-items:center;
-  padding:18px 30px;
+  padding:20px;
   border-bottom:1px solid #151515;
 }
 
-.logo {
-  font-weight:600;
-  letter-spacing:1px;
-  color:#a78bfa;
-}
-
-.admin-btn {
-  cursor:pointer;
-  opacity:0.7;
-  transition:0.2s;
-}
-
-.admin-btn:hover {
-  opacity:1;
-}
-
-/* GRID */
-.container {
-  padding:30px;
-}
-
-.catalogo {
-  margin-bottom:35px;
-}
-
-.catalogo h2 {
-  font-weight:500;
-  margin-bottom:15px;
-}
+.logo {color:#a78bfa;}
 
 /* BEATS */
+.container {padding:25px;}
+
 .beat {
-  padding:14px;
+  padding:15px;
   border-bottom:1px solid #1a1a1a;
   cursor:pointer;
-  transition:0.2s;
 }
 
-.beat:hover {
-  background:#121212;
+.beat:hover {background:#111;}
+
+.titulo {font-size:14px;}
+
+.wave {
+  display:flex;
+  gap:2px;
+  margin-top:8px;
 }
 
-.ativo {
-  background:#1a1325;
+.bar {
+  width:3px;
+  height:10px;
+  background:#444;
+  animation: wave 1s infinite ease-in-out;
+}
+
+.bar:nth-child(2){animation-delay:0.1s}
+.bar:nth-child(3){animation-delay:0.2s}
+.bar:nth-child(4){animation-delay:0.3s}
+.bar:nth-child(5){animation-delay:0.4s}
+
+@keyframes wave {
+  0%,100%{height:10px}
+  50%{height:18px}
 }
 
 /* PLAYER */
@@ -75,42 +66,23 @@ body {
   bottom:0;
   width:100%;
   background:#0d0d0d;
-  padding:12px;
-  border-top:1px solid #1a1a1a;
-}
-
-audio {
-  width:100%;
-}
-
-/* MODAIS */
-#login, #admin {
-  display:none;
-  position:fixed;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  background:#0f0f0f;
-  padding:20px;
-  border-radius:12px;
-  border:1px solid #1a1a1a;
-}
-
-input {
-  display:block;
-  margin:8px 0;
   padding:10px;
-  background:#111;
-  border:none;
-  color:white;
-  border-radius:8px;
 }
 
-button {
-  padding:10px;
+.controls {
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.play {
+  width:30px;
+  height:30px;
+  border-radius:50%;
   background:#a78bfa;
-  border:none;
-  border-radius:8px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
   cursor:pointer;
 }
 </style>
@@ -120,107 +92,56 @@ button {
 
 <div class="nav">
   <div class="logo">wino*</div>
-
-  <!-- ÍCONE SVG -->
-  <div class="admin-btn" onclick="abrirLogin()">
-    <svg width="22" height="22" fill="#a78bfa" viewBox="0 0 24 24">
-      <path d="M12 2l7 4v6c0 5-3.5 9-7 10-3.5-1-7-5-7-10V6l7-4z"/>
-    </svg>
-  </div>
 </div>
 
 <div class="container" id="lista"></div>
 
-<!-- PLAYER -->
 <div class="player">
   <div id="tocando">Nada tocando</div>
-  <audio id="audio" controls></audio>
+  <div class="controls">
+    <div class="play" onclick="toggle()">▶</div>
+  </div>
 </div>
 
-<!-- LOGIN -->
-<div id="login">
-  <input id="senha" type="password" placeholder="Senha">
-  <button onclick="logar()">Entrar</button>
-</div>
-
-<!-- ADMIN -->
-<div id="admin">
-  <h3>Criar catálogo</h3>
-  <input id="nomeCatalogo" placeholder="Nome">
-  <button onclick="criarCatalogo()">Criar</button>
-
-  <h3>Adicionar beat</h3>
-  <input id="cat" placeholder="Catálogo">
-  <input id="nomeBeat" placeholder="Nome">
-  <input id="arquivo" placeholder="arquivo.mp3">
-  <button onclick="addBeat()">Adicionar</button>
-</div>
+<audio id="audio"></audio>
 
 <script>
-let senhaCorreta = "mbappe10!"
-
-function abrirLogin(){
-  login.style.display="block"
-}
-
-function logar(){
-  if(senha.value===senhaCorreta){
-    login.style.display="none"
-    admin.style.display="block"
-  } else alert("senha errada")
-}
-
-let dados = JSON.parse(localStorage.getItem("cats")) || {}
-
-function salvar(){
-  localStorage.setItem("cats", JSON.stringify(dados))
-  render()
-}
-
-function criarCatalogo(){
-  if(!dados[nomeCatalogo.value]) dados[nomeCatalogo.value]=[]
-  salvar()
-}
-
-function addBeat(){
-  if(dados[cat.value]){
-    dados[cat.value].push({
-      nome:nomeBeat.value,
-      arq:arquivo.value
-    })
-    salvar()
-  }
-}
-
 let audio = document.getElementById("audio")
+let atual = null
 
-function playBeat(src, el, nome){
-  audio.src = src
-  audio.play()
-  tocando.innerText = nome
-
-  document.querySelectorAll(".beat").forEach(b=>b.classList.remove("ativo"))
-  el.classList.add("ativo")
-}
+let beats = [
+  {nome:"plug 140", src:"beat1.mp3"},
+  {nome:"rage 150", src:"beat2.mp3"}
+]
 
 function render(){
   lista.innerHTML=""
+  beats.forEach((b,i)=>{
+    lista.innerHTML += `
+    <div class="beat" onclick="play(${i})">
+      <div class="titulo">${b.nome}</div>
+      <div class="wave">
+        <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+      </div>
+    </div>`
+  })
+}
 
-  for(let c in dados){
-    let div = document.createElement("div")
-    div.className="catalogo"
+function play(i){
+  atual = i
+  audio.src = beats[i].src
+  audio.play()
+  tocando.innerText = beats[i].nome
+}
 
-    let html = `<h2>${c}</h2>`
+function toggle(){
+  if(audio.paused) audio.play()
+  else audio.pause()
+}
 
-    dados[c].forEach(b=>{
-      html += `
-      <div class="beat" onclick="playBeat('${b.arq}', this, '${b.nome}')">
-        ${b.nome}
-      </div>`
-    })
-
-    div.innerHTML = html
-    lista.appendChild(div)
+audio.onended = ()=>{
+  if(atual < beats.length-1){
+    play(atual+1)
   }
 }
 
