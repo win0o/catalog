@@ -2,33 +2,41 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Catálogos</title>
+<title>wino*</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;500;700&display=swap" rel="stylesheet">
 
 <style>
 body {
   margin:0;
-  font-family:'Inter', sans-serif;
-  background:#0b0b0b;
-  color:white;
+  font-family:'Manrope', sans-serif;
+  background:#0a0a0a;
+  color:#e5e5e5;
 }
 
 /* NAV */
 .nav {
   display:flex;
   justify-content:space-between;
-  padding:20px;
-  border-bottom:1px solid #1a1a1a;
+  align-items:center;
+  padding:18px 30px;
+  border-bottom:1px solid #151515;
 }
 
-.logo {color:#c084fc; font-weight:700;}
+.logo {
+  font-weight:600;
+  letter-spacing:1px;
+  color:#a78bfa;
+}
 
-.btn {
+.admin-btn {
   cursor:pointer;
-  background:#1a1325;
-  padding:8px 12px;
-  border-radius:10px;
+  opacity:0.7;
+  transition:0.2s;
+}
+
+.admin-btn:hover {
+  opacity:1;
 }
 
 /* GRID */
@@ -37,23 +45,24 @@ body {
 }
 
 .catalogo {
-  margin-bottom:30px;
+  margin-bottom:35px;
 }
 
 .catalogo h2 {
-  margin-bottom:10px;
+  font-weight:500;
+  margin-bottom:15px;
 }
 
 /* BEATS */
 .beat {
-  padding:12px;
-  border-bottom:1px solid #222;
+  padding:14px;
+  border-bottom:1px solid #1a1a1a;
   cursor:pointer;
   transition:0.2s;
 }
 
 .beat:hover {
-  background:#111;
+  background:#121212;
 }
 
 .ativo {
@@ -65,30 +74,44 @@ body {
   position:fixed;
   bottom:0;
   width:100%;
-  background:#111;
-  padding:10px;
-  border-top:1px solid #222;
+  background:#0d0d0d;
+  padding:12px;
+  border-top:1px solid #1a1a1a;
 }
 
 audio {
   width:100%;
 }
 
-/* LOGIN */
+/* MODAIS */
 #login, #admin {
   display:none;
   position:fixed;
   top:50%;
   left:50%;
   transform:translate(-50%,-50%);
-  background:#111;
+  background:#0f0f0f;
   padding:20px;
-  border-radius:10px;
+  border-radius:12px;
+  border:1px solid #1a1a1a;
 }
+
 input {
   display:block;
-  margin:5px 0;
-  padding:8px;
+  margin:8px 0;
+  padding:10px;
+  background:#111;
+  border:none;
+  color:white;
+  border-radius:8px;
+}
+
+button {
+  padding:10px;
+  background:#a78bfa;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
 }
 </style>
 </head>
@@ -96,15 +119,21 @@ input {
 <body>
 
 <div class="nav">
-  <div class="logo">🎧 wino*</div>
-  <div class="btn" onclick="abrirLogin()">🛡️</div>
+  <div class="logo">wino*</div>
+
+  <!-- ÍCONE SVG -->
+  <div class="admin-btn" onclick="abrirLogin()">
+    <svg width="22" height="22" fill="#a78bfa" viewBox="0 0 24 24">
+      <path d="M12 2l7 4v6c0 5-3.5 9-7 10-3.5-1-7-5-7-10V6l7-4z"/>
+    </svg>
+  </div>
 </div>
 
 <div class="container" id="lista"></div>
 
 <!-- PLAYER -->
 <div class="player">
-  <strong id="tocando">Nada tocando</strong>
+  <div id="tocando">Nada tocando</div>
   <audio id="audio" controls></audio>
 </div>
 
@@ -131,4 +160,72 @@ input {
 let senhaCorreta = "mbappe10!"
 
 function abrirLogin(){
-  document.getElementById("login").sty
+  login.style.display="block"
+}
+
+function logar(){
+  if(senha.value===senhaCorreta){
+    login.style.display="none"
+    admin.style.display="block"
+  } else alert("senha errada")
+}
+
+let dados = JSON.parse(localStorage.getItem("cats")) || {}
+
+function salvar(){
+  localStorage.setItem("cats", JSON.stringify(dados))
+  render()
+}
+
+function criarCatalogo(){
+  if(!dados[nomeCatalogo.value]) dados[nomeCatalogo.value]=[]
+  salvar()
+}
+
+function addBeat(){
+  if(dados[cat.value]){
+    dados[cat.value].push({
+      nome:nomeBeat.value,
+      arq:arquivo.value
+    })
+    salvar()
+  }
+}
+
+let audio = document.getElementById("audio")
+
+function playBeat(src, el, nome){
+  audio.src = src
+  audio.play()
+  tocando.innerText = nome
+
+  document.querySelectorAll(".beat").forEach(b=>b.classList.remove("ativo"))
+  el.classList.add("ativo")
+}
+
+function render(){
+  lista.innerHTML=""
+
+  for(let c in dados){
+    let div = document.createElement("div")
+    div.className="catalogo"
+
+    let html = `<h2>${c}</h2>`
+
+    dados[c].forEach(b=>{
+      html += `
+      <div class="beat" onclick="playBeat('${b.arq}', this, '${b.nome}')">
+        ${b.nome}
+      </div>`
+    })
+
+    div.innerHTML = html
+    lista.appendChild(div)
+  }
+}
+
+render()
+</script>
+
+</body>
+</html>
