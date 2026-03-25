@@ -4,11 +4,13 @@
 <meta charset="UTF-8">
 <title>wino*</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
 <style>
 body {
   margin: 0;
-  font-family: Arial;
-  background: #0b0b0b;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(180deg, #0b0b0b, #050505);
   color: white;
 }
 
@@ -16,22 +18,28 @@ body {
 .navbar {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 15px 30px;
+  padding: 20px 40px;
   border-bottom: 1px solid #1a1a1a;
 }
 
 .logo {
-  font-weight: bold;
   color: #c084fc;
+  font-weight: 700;
+  font-size: 18px;
 }
 
 .menu a {
   margin: 0 10px;
   text-decoration: none;
   color: #aaa;
-  padding: 6px 12px;
-  border-radius: 10px;
+  padding: 8px 14px;
+  border-radius: 12px;
+  transition: 0.3s;
+}
+
+.menu a:hover {
+  background: #1a1325;
+  color: #c084fc;
 }
 
 .menu a.active {
@@ -39,31 +47,57 @@ body {
   color: #c084fc;
 }
 
-/* CONTEÚDO */
+/* CONTAINER */
 .container {
-  padding: 40px;
+  padding: 50px;
 }
 
 .titulo {
-  font-size: 20px;
+  font-size: 22px;
   margin-bottom: 30px;
 }
 
-/* EMPTY STATE */
+/* CARDS */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: #111;
+  border-radius: 16px;
+  padding: 20px;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  background: #181818;
+}
+
+.card h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.card p {
+  color: #777;
+  font-size: 13px;
+}
+
+/* EMPTY */
 .empty {
   text-align: center;
   margin-top: 100px;
-  color: #888;
+  color: #777;
+  animation: fade 1s ease;
 }
 
-.icon {
-  font-size: 40px;
-  margin-bottom: 10px;
-}
-
-.sub {
-  font-size: 14px;
-  color: #555;
+@keyframes fade {
+  from {opacity:0; transform: translateY(10px);}
+  to {opacity:1; transform: translateY(0);}
 }
 </style>
 </head>
@@ -80,16 +114,15 @@ body {
 </div>
 
 <div class="container">
-  <div class="titulo">🎵 Meus Beats</div>
+
+  <div class="titulo">🎧 Meus Beats</div>
 
   <div class="empty">
-    <div class="icon">🎵</div>
-    <div>Nenhum beat ainda</div>
-    <div class="sub">Faça o upload do seu primeiro beat para começar</div>
+    <h3>Nada por enquanto...</h3>
+    <p>Adicione beats pelo painel admin 🛡️</p>
   </div>
+
 </div>
 
 </body>
 </html>
-
-
