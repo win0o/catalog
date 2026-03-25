@@ -1,0 +1,154 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Catálogos</title>
+
+<style>
+body {
+  background:#0b0b0b;
+  color:white;
+  font-family:Arial;
+  margin:0;
+}
+
+.nav {
+  display:flex;
+  justify-content:space-between;
+  padding:15px 30px;
+  border-bottom:1px solid #222;
+}
+
+.btn {
+  background:#1a1325;
+  color:#c084fc;
+  padding:6px 12px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.container {
+  padding:30px;
+}
+
+.catalogo {
+  background:#111;
+  padding:15px;
+  margin-bottom:20px;
+  border-radius:10px;
+}
+
+.beat {
+  margin-top:10px;
+}
+
+input {
+  margin:5px;
+  padding:8px;
+  border-radius:5px;
+  border:none;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="nav">
+  <div>📁 Catálogos</div>
+  <div onclick="abrirLogin()" class="btn">🛡️</div>
+</div>
+
+<div class="container" id="lista"></div>
+
+<!-- LOGIN -->
+<div id="login" style="display:none; position:fixed; top:40%; left:50%; transform:translate(-50%,-50%);
+background:#111; padding:20px; border-radius:10px;">
+  <input id="senha" type="password" placeholder="Senha">
+  <button onclick="logar()">Entrar</button>
+</div>
+
+<!-- ADMIN -->
+<div id="admin" style="display:none; padding:20px;">
+  <h3>Criar catálogo</h3>
+  <input id="nomeCatalogo" placeholder="Nome do catálogo">
+  <button onclick="criarCatalogo()">Criar</button>
+
+  <h3>Adicionar beat</h3>
+  <input id="catSelect" placeholder="Nome do catálogo">
+  <input id="nomeBeat" placeholder="Nome do beat">
+  <input id="arquivoBeat" placeholder="arquivo.mp3">
+  <button onclick="addBeat()">Adicionar</button>
+</div>
+
+<script>
+let senhaCorreta = "1234"
+
+function abrirLogin(){
+  document.getElementById("login").style.display="block"
+}
+
+function logar(){
+  if(document.getElementById("senha").value === senhaCorreta){
+    document.getElementById("login").style.display="none"
+    document.getElementById("admin").style.display="block"
+  } else {
+    alert("senha errada")
+  }
+}
+
+let dados = JSON.parse(localStorage.getItem("catalogos")) || {}
+
+function salvar(){
+  localStorage.setItem("catalogos", JSON.stringify(dados))
+  render()
+}
+
+function criarCatalogo(){
+  let nome = document.getElementById("nomeCatalogo").value
+  if(!dados[nome]) dados[nome] = []
+  salvar()
+}
+
+function addBeat(){
+  let cat = document.getElementById("catSelect").value
+  let nome = document.getElementById("nomeBeat").value
+  let arq = document.getElementById("arquivoBeat").value
+
+  if(dados[cat]){
+    dados[cat].push({nome, arq})
+    salvar()
+  }
+}
+
+function render(){
+  let lista = document.getElementById("lista")
+  lista.innerHTML = ""
+
+  for(let cat in dados){
+    let div = document.createElement("div")
+    div.className="catalogo"
+
+    let html = `<h2>${cat}</h2>`
+
+    dados[cat].forEach(b=>{
+      html += `
+        <div class="beat">
+          ${b.nome}
+          <audio controls src="${b.arq}"></audio>
+        </div>
+      `
+    })
+
+    div.innerHTML = html
+    lista.appendChild(div)
+  }
+}
+
+render()
+</script>
+
+</body>
+</html>
+```
