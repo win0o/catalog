@@ -4,150 +4,131 @@
 <meta charset="UTF-8">
 <title>Catálogos</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
 <style>
 body {
+  margin:0;
+  font-family:'Inter', sans-serif;
   background:#0b0b0b;
   color:white;
-  font-family:Arial;
-  margin:0;
 }
 
+/* NAV */
 .nav {
   display:flex;
   justify-content:space-between;
-  padding:15px 30px;
-  border-bottom:1px solid #222;
+  padding:20px;
+  border-bottom:1px solid #1a1a1a;
 }
+
+.logo {color:#c084fc; font-weight:700;}
 
 .btn {
-  background:#1a1325;
-  color:#c084fc;
-  padding:6px 12px;
-  border-radius:10px;
   cursor:pointer;
+  background:#1a1325;
+  padding:8px 12px;
+  border-radius:10px;
 }
 
+/* GRID */
 .container {
   padding:30px;
 }
 
 .catalogo {
+  margin-bottom:30px;
+}
+
+.catalogo h2 {
+  margin-bottom:10px;
+}
+
+/* BEATS */
+.beat {
+  padding:12px;
+  border-bottom:1px solid #222;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.beat:hover {
   background:#111;
-  padding:15px;
-  margin-bottom:20px;
+}
+
+.ativo {
+  background:#1a1325;
+}
+
+/* PLAYER */
+.player {
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:#111;
+  padding:10px;
+  border-top:1px solid #222;
+}
+
+audio {
+  width:100%;
+}
+
+/* LOGIN */
+#login, #admin {
+  display:none;
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background:#111;
+  padding:20px;
   border-radius:10px;
 }
-
-.beat {
-  margin-top:10px;
-}
-
 input {
-  margin:5px;
+  display:block;
+  margin:5px 0;
   padding:8px;
-  border-radius:5px;
-  border:none;
 }
-
 </style>
 </head>
 
 <body>
 
 <div class="nav">
-  <div>📁 Catálogos</div>
-  <div onclick="abrirLogin()" class="btn">🛡️</div>
+  <div class="logo">🎧 wino*</div>
+  <div class="btn" onclick="abrirLogin()">🛡️</div>
 </div>
 
 <div class="container" id="lista"></div>
 
+<!-- PLAYER -->
+<div class="player">
+  <strong id="tocando">Nada tocando</strong>
+  <audio id="audio" controls></audio>
+</div>
+
 <!-- LOGIN -->
-<div id="login" style="display:none; position:fixed; top:40%; left:50%; transform:translate(-50%,-50%);
-background:#111; padding:20px; border-radius:10px;">
+<div id="login">
   <input id="senha" type="password" placeholder="Senha">
   <button onclick="logar()">Entrar</button>
 </div>
 
 <!-- ADMIN -->
-<div id="admin" style="display:none; padding:20px;">
+<div id="admin">
   <h3>Criar catálogo</h3>
-  <input id="nomeCatalogo" placeholder="Nome do catálogo">
+  <input id="nomeCatalogo" placeholder="Nome">
   <button onclick="criarCatalogo()">Criar</button>
 
   <h3>Adicionar beat</h3>
-  <input id="catSelect" placeholder="Nome do catálogo">
-  <input id="nomeBeat" placeholder="Nome do beat">
-  <input id="arquivoBeat" placeholder="arquivo.mp3">
+  <input id="cat" placeholder="Catálogo">
+  <input id="nomeBeat" placeholder="Nome">
+  <input id="arquivo" placeholder="arquivo.mp3">
   <button onclick="addBeat()">Adicionar</button>
 </div>
 
 <script>
-let senhaCorreta = "1234"
+let senhaCorreta = "mbappe10!"
 
 function abrirLogin(){
-  document.getElementById("login").style.display="block"
-}
-
-function logar(){
-  if(document.getElementById("senha").value === senhaCorreta){
-    document.getElementById("login").style.display="none"
-    document.getElementById("admin").style.display="block"
-  } else {
-    alert("senha errada")
-  }
-}
-
-let dados = JSON.parse(localStorage.getItem("catalogos")) || {}
-
-function salvar(){
-  localStorage.setItem("catalogos", JSON.stringify(dados))
-  render()
-}
-
-function criarCatalogo(){
-  let nome = document.getElementById("nomeCatalogo").value
-  if(!dados[nome]) dados[nome] = []
-  salvar()
-}
-
-function addBeat(){
-  let cat = document.getElementById("catSelect").value
-  let nome = document.getElementById("nomeBeat").value
-  let arq = document.getElementById("arquivoBeat").value
-
-  if(dados[cat]){
-    dados[cat].push({nome, arq})
-    salvar()
-  }
-}
-
-function render(){
-  let lista = document.getElementById("lista")
-  lista.innerHTML = ""
-
-  for(let cat in dados){
-    let div = document.createElement("div")
-    div.className="catalogo"
-
-    let html = `<h2>${cat}</h2>`
-
-    dados[cat].forEach(b=>{
-      html += `
-        <div class="beat">
-          ${b.nome}
-          <audio controls src="${b.arq}"></audio>
-        </div>
-      `
-    })
-
-    div.innerHTML = html
-    lista.appendChild(div)
-  }
-}
-
-render()
-</script>
-
-</body>
-</html>
-
+  document.getElementById("login").sty
